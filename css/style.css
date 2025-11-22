@@ -1,6 +1,6 @@
 :root {
-    --primary-color: #6366f1;
-    --primary-hover: #4f46e5;
+    --primary-color: #0372ba;
+    --primary-hover: #025992;
     --secondary-color: #ec4899;
     --background-color: #0f172a;
     --surface-color: #1e293b;
@@ -29,10 +29,16 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 1rem;
+    letter-spacing: -0.025em;
 }
 
 a {
@@ -54,8 +60,8 @@ a:hover {
 }
 
 header {
-    background-color: rgba(30, 41, 59, 0.8);
-    backdrop-filter: blur(10px);
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
@@ -72,20 +78,23 @@ nav {
 .logo {
     font-size: 1.5rem;
     font-weight: 800;
-    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--primary-color);
+    background: none;
+    -webkit-text-fill-color: initial;
 }
 
 .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     list-style: none;
+    align-items: center;
 }
 
 .nav-links a {
-    color: var(--text-color);
+    color: var(--text-muted);
     font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s;
 }
 
 .nav-links a:hover {
@@ -94,29 +103,47 @@ nav {
 
 main {
     flex: 1;
-    padding: 2rem 0;
+    padding: 6rem 0;
+    /* Increased from 4rem */
+}
+
+/* Add specific spacing for page titles */
+main h1 {
+    margin-bottom: 3rem;
+}
+
+/* Add specific spacing for hero section content if needed */
+.hero-content {
+    margin-top: 3rem;
 }
 
 /* Buttons */
 .btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    font-size: 1rem;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-top: 0;
+    /* Removed default margin for better control */
 }
 
 .btn-primary {
     background-color: var(--primary-color);
     color: white;
+    box-shadow: 0 4px 6px -1px rgba(3, 114, 186, 0.2), 0 2px 4px -1px rgba(3, 114, 186, 0.1);
 }
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
     transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(3, 114, 186, 0.3), 0 4px 6px -1px rgba(3, 114, 186, 0.15);
 }
 
 .btn-outline {
@@ -128,6 +155,7 @@ main {
 .btn-outline:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
+    background-color: rgba(3, 114, 186, 0.05);
 }
 
 /* Forms */
@@ -140,24 +168,29 @@ label {
     margin-bottom: 0.5rem;
     color: var(--text-muted);
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem 1rem;
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     color: var(--text-color);
     font-family: inherit;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+    font-size: 0.95rem;
+    transition: all 0.2s;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 3px rgba(3, 114, 186, 0.2);
 }
 
 /* Cards */
@@ -224,11 +257,25 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Utilities */
-.text-center { text-align: center; }
-.mt-1 { margin-top: 0.25rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-4 { margin-top: 1rem; }
-.mb-4 { margin-bottom: 1rem; }
+.text-center {
+    text-align: center;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
 
 .badge {
     display: inline-block;
@@ -252,12 +299,29 @@ input:focus, textarea:focus, select:focus {
 /* Auth Pages */
 .auth-container {
     max-width: 400px;
-    margin: 4rem auto;
+    margin: 6rem auto;
+    /* Increased top margin */
+}
+
+/* Action Buttons Container */
+#action-buttons {
+    margin-top: 3rem;
+    gap: 2rem;
+    /* Increased gap between buttons */
+    display: flex;
+    flex-wrap: wrap;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .nav-links {
-        display: none; /* Mobile menu implementation can be added later */
+        display: none;
+        /* Mobile menu implementation can be added later */
     }
+}
+
+.badge-resolved {
+    background-color: rgba(3, 114, 186, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(3, 114, 186, 0.3);
 }

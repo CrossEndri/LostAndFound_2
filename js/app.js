@@ -1,6 +1,7 @@
 import { monitorAuthState, logOut } from './auth.js';
-import { getItems, getItemById } from './db.js';
+import { getItems, getItemById, updateItemStatus } from './db.js';
 import { createItemCard, formatDate } from './utils.js';
+import { auth } from './firebase-config.js';
 
 // Global function for modal
 window.openItemModal = async (id) => {
@@ -11,10 +12,22 @@ window.openItemModal = async (id) => {
     modal.classList.add('active');
 
     try {
+        // Wait for auth to initialize to ensure we have the correct user
+        const currentUser = await new Promise((resolve) => {
+            const unsubscribe = auth.onAuthStateChanged((user) => {
+                unsubscribe();
+                resolve(user);
+            });
+        });
+
         const item = await getItemById(id);
         if (item) {
-            const badgeClass = item.type === 'lost' ? 'badge-lost' : 'badge-found';
-            const badgeText = item.type === 'lost' ? 'Lost' : 'Found';
+            const isResolved = item.status === 'resolved';
+            const badgeClass = isResolved ? 'badge-resolved' : (item.type === 'lost' ? 'badge-lost' : 'badge-found');
+            const badgeText = isResolved ? 'Resolved' : (item.type === 'lost' ? 'Lost' : 'Found');
+            
+            // Check if current user is owner
+            const isOwner = currentUser && currentUser.uid === item.userId;
             
             modalContent.innerHTML = `
                 <div class="mb-4">
@@ -30,8 +43,43 @@ window.openItemModal = async (id) => {
                     <p><strong>📍 Location:</strong> ${item.location}</p>
                     <p class="mt-2"><strong>📞 Contact:</strong> ${item.contact}</p>
                     ${item.reward ? `<p class="mt-2"><strong>💰 Reward:</strong> ${item.reward}</p>` : ''}
+                    
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">Reported by:</p>
+                        <p><strong>👤 Name:</strong> ${item.userName || 'Unknown'}</p>
+                        <p class="mt-1"><strong>🎓 Major:</strong> ${item.userMajor || 'Unknown'}</p>
+                        <p class="mt-1"><strong>🆔 NIM:</strong> ${item.userNim || 'Unknown'}</p>
+                    </div>
                 </div>
+
+                ${isOwner && !isResolved ? `
+                    <div class="mt-4 text-center">
+                        <button id="mark-resolved-btn" class="btn btn-primary" style="width: 100%; background-color: var(--success-color);">
+                            Mark as Resolved
+                        </button>
+                    </div>
+                ` : ''}
             `;
+
+            // Add event listener for resolved button
+            if (isOwner && !isResolved) {
+                const resolveBtn = document.getElementById('mark-resolved-btn');
+                if (resolveBtn) {
+                    resolveBtn.addEventListener('click', async () => {
+                        if (confirm('Are you sure you want to mark this item as resolved?')) {
+                            try {
+                                await updateItemStatus(item.id, 'resolved');
+                                alert('Item marked as resolved!');
+                                modal.classList.remove('active');
+                                window.location.reload();
+                            } catch (error) {
+                                console.error(error);
+                                alert('Error updating status: ' + error.message);
+                            }
+                        }
+                    });
+                }
+            }
         } else {
             modalContent.innerHTML = '<p class="text-center">Item not found.</p>';
         }

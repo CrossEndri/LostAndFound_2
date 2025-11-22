@@ -11,21 +11,47 @@
 <body>
     <div class="container auth-container">
         <div class="card">
-            <h2 class="text-center mb-4">Create Account</h2>
+            <h2 class="mb-4">Sign Up</h2>
             <form id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="nim">NIM</label>
+                    <input type="number" id="nim" required placeholder="Enter your NIM">
+                </div>
+
+                <div class="form-group">
+                    <label for="major">Major</label>
+                    <select id="major" required>
+                        <option value="" disabled selected>Select your major</option>
+                        <option value="Manajemen">Manajemen</option>
+                        <option value="Akuntansi">Akuntansi</option>
+                        <option value="Teknik Informatika">Teknik Informatika</option>
+                        <option value="Teknik Perangkat Lunak">Teknik Perangkat Lunak</option>
+                        <option value="Sistem Informasi">Sistem Informasi</option>
+                        <option value="Teknik Industri">Teknik Industri</option>
+                        <option value="Bahasa Mandarin">Bahasa Mandarin</option>
+                        <option value="Pendidikan Bahasa Mandarin">Pendidikan Bahasa Mandarin</option>
+                        <option value="Hukum Bisnis">Hukum Bisnis</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" required placeholder="Enter your email">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" required placeholder="Choose a password">
+                    <input type="password" id="password" required placeholder="Create a password">
                 </div>
                 <div class="form-group">
                     <label for="confirm-password">Confirm Password</label>
                     <input type="password" id="confirm-password" required placeholder="Confirm your password">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%">Sign Up</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Sign Up</button>
             </form>
             <p class="text-center mt-4">
                 Already have an account? <a href="login.html">Log in</a>
@@ -43,6 +69,10 @@
 
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const nim = document.getElementById('nim').value;
+            const major = document.getElementById('major').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
@@ -53,7 +83,11 @@
             }
 
             try {
-                await signUp(email, password);
+                await signUp(email, password, {
+                    name,
+                    nim,
+                    major
+                });
                 window.location.href = 'index.html';
             } catch (error) {
                 alert(error.message);
