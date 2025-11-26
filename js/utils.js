@@ -11,11 +11,13 @@ export const formatDate = (timestamp) => {
 };
 
 export const createItemCard = (item) => {
-    const badgeClass = item.type === 'lost' ? 'badge-lost' : 'badge-found';
-    const badgeText = item.type === 'lost' ? 'Lost' : 'Found';
+    const isResolved = item.status === 'resolved';
+    const badgeClass = isResolved ? 'badge-resolved' : (item.type === 'lost' ? 'badge-lost' : 'badge-found');
+    const badgeText = isResolved ? 'Resolved' : (item.type === 'lost' ? 'Lost' : 'Found');
+    const cardStyle = isResolved ? 'opacity: 0.7; filter: grayscale(0.5);' : '';
     
     return `
-        <div class="card" onclick="openItemModal('${item.id}')">
+        <div class="card" style="${cardStyle}" onclick="openItemModal('${item.id}')">
             <div class="mb-4">
                 <span class="badge ${badgeClass}">${badgeText}</span>
                 <span style="float: right; color: var(--text-muted); font-size: 0.8rem;">
