@@ -8,10 +8,13 @@ import {
     query, 
     where, 
     orderBy, 
-    serverTimestamp 
+    serverTimestamp,
+    updateDoc,
+    setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const ITEMS_COLLECTION = 'items';
+const USERS_COLLECTION = 'users';
 
 export const addItem = async (itemData) => {
     try {
@@ -60,6 +63,45 @@ export const getItemById = async (id) => {
         }
     } catch (error) {
         console.error("Error getting document: ", error);
+        throw error;
+    }
+};
+
+export const updateItemStatus = async (id, status) => {
+    try {
+        const docRef = doc(db, ITEMS_COLLECTION, id);
+        await updateDoc(docRef, {
+            status: status
+        });
+    } catch (error) {
+        console.error("Error updating document: ", error);
+        throw error;
+    }
+};
+
+export const saveUserProfile = async (uid, data) => {
+    try {
+        await setDoc(doc(db, USERS_COLLECTION, uid), {
+            ...data,
+            createdAt: serverTimestamp()
+        });
+    } catch (error) {
+        console.error("Error saving user profile: ", error);
+        throw error;
+    }
+};
+
+export const getUserProfile = async (uid) => {
+    try {
+        const docRef = doc(db, USERS_COLLECTION, uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Error getting user profile: ", error);
         throw error;
     }
 };
