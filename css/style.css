@@ -320,6 +320,10 @@ select:focus {
     }
 }
 
+.home-page {
+    padding-top: 100px !important;
+}
+
 .badge-resolved {
     background-color: rgba(3, 114, 186, 0.15);
     color: #60a5fa;
